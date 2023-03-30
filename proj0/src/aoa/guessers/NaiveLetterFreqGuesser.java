@@ -26,9 +26,11 @@ public class NaiveLetterFreqGuesser implements Guesser {
     public Map<Character, Integer> getFrequencyMap() {
         Map<Character, Integer> map = new TreeMap<>();
         String alphabet = "abcdefghijklmnopqrstuvwxyz";
+
         for (int i = 0; i < 26; i++) {
             char letter = alphabet.charAt(i);
             int count = 0;
+
             for (String word : words) {
                 for (int j = 0; j < word.length(); j++) {
                     if (word.charAt(j) == letter) {
@@ -36,10 +38,12 @@ public class NaiveLetterFreqGuesser implements Guesser {
                     }
                 }
             }
+
             if (count > 0) {
                 map.put(letter, count);
             }
         }
+        
         return map;
     }
 
@@ -55,11 +59,13 @@ public class NaiveLetterFreqGuesser implements Guesser {
             }
         }
         int max = 0;
+
         for (Integer i : map.values()) {
             if (i > max) {
                 max = i;
             }
         }
+
         for (Character key : map.keySet()) {
             if (map.get(key) == max) {
                 return key;
