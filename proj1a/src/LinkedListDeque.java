@@ -1,25 +1,25 @@
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.google.common.truth.Truth.assertThat;
-
 public class LinkedListDeque<T> implements Deque<T> {
     public static void main(String[] args) {
         Deque<Integer> lld = new LinkedListDeque<>();
     }
 
-    private Node<Integer> sentinel;
+    private Node sentinel;
     private int size;
 
     public LinkedListDeque() {
         this.sentinel = new Node<>(42, null, null);
+        this.sentinel.next = this.sentinel;
+        this.sentinel.prev = this.sentinel;
         this.size = 0;
     }
 
     private class Node<T> {
         public T data;
-        public Node next;
-        public Node prev;
+        public Node<T> next;
+        public Node<T> prev;
 
         public Node(T data, Node next, Node prev){
             this.data = data;
@@ -30,28 +30,30 @@ public class LinkedListDeque<T> implements Deque<T> {
     @Override
     public void addFirst(T x) {
 
-//        this.sentinel.next = new Node<>(x, this.sentinel.next, this.sentinel);
-//        this.size++;
-//
-//        if (this.size == 1){
-//            this.sentinel.prev = this.sentinel.next;
-//            this.sentinel.next.next = this.sentinel;
-//        }
         if (this.size == 0){
+
             this.sentinel.next = new Node<>(x, this.sentinel, this.sentinel);
             this.sentinel.prev = this.sentinel.next;
             this.size++;
+
         } else {
+
             this.sentinel.next = new Node<>(x, this.sentinel.next, this.sentinel);
+            this.sentinel.next.next.prev = this.sentinel.next;
             this.size++;
+
         }
     }
 
     @Override
     public void addLast(T x) {
+
         if (this.size == 0){
+
             this.addFirst(x);
+
         } else {
+
             this.sentinel.prev.next = new Node<>(x, this.sentinel, this.sentinel.prev);
             this.sentinel.prev = this.sentinel.prev.next;
             this.size++;
@@ -89,17 +91,50 @@ public class LinkedListDeque<T> implements Deque<T> {
 
     @Override
     public T removeFirst() {
-        return null;
+        if (this.size == 0) {
+            return null;
+        }
+
+        Node ptr = this.sentinel.next;
+        T returnValue = (T) ptr.data;
+
+        this.sentinel.next = this.sentinel.next.next;
+        this.sentinel.next.prev = this.sentinel;
+        this.size--;
+
+        return returnValue;
     }
 
     @Override
     public T removeLast() {
-        return null;
+        if (this.size == 0) {
+            return null;
+        }
+
+        Node ptr = this.sentinel.prev;
+        T returnValue = (T) ptr.data;
+
+
+        this.sentinel.prev = this.sentinel.prev.prev;
+        this.sentinel.prev.next = this.sentinel;
+        this.size--;
+
+        return returnValue;
     }
 
     @Override
     public T get(int index) {
-        return null;
+        if (index >= this.size || this.size == 0 || index < 0) {
+            return null;
+        }
+
+        Node ptr = this.sentinel;
+
+        for (int i = 0; i <= index; i++){
+            ptr = ptr.next;
+        }
+
+        return (T) ptr.data;
     }
 
     @Override
