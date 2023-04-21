@@ -1,15 +1,18 @@
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.google.common.truth.Truth.assertThat;
 
 public class LinkedListDeque<T> implements Deque<T> {
     public static void main(String[] args) {
         Deque<Integer> lld = new LinkedListDeque<>();
     }
 
-    private Node sentinel;
+    private Node<Integer> sentinel;
     private int size;
 
     public LinkedListDeque() {
-        this.sentinel = new Node(42, this.sentinel, this.sentinel);
+        this.sentinel = new Node<>(42, null, null);
         this.size = 0;
     }
 
@@ -26,19 +29,52 @@ public class LinkedListDeque<T> implements Deque<T> {
     }
     @Override
     public void addFirst(T x) {
-        this.sentinel.next = new Node(x, this.sentinel.next, this.sentinel.prev);
-        this.size++;
+
+//        this.sentinel.next = new Node<>(x, this.sentinel.next, this.sentinel);
+//        this.size++;
+//
+//        if (this.size == 1){
+//            this.sentinel.prev = this.sentinel.next;
+//            this.sentinel.next.next = this.sentinel;
+//        }
+        if (this.size == 0){
+            this.sentinel.next = new Node<>(x, this.sentinel, this.sentinel);
+            this.sentinel.prev = this.sentinel.next;
+            this.size++;
+        } else {
+            this.sentinel.next = new Node<>(x, this.sentinel.next, this.sentinel);
+            this.size++;
+        }
     }
 
     @Override
     public void addLast(T x) {
-        this.sentinel.prev = new Node(x, this.sentinel.next, this.sentinel.prev);
-        this.size++;
+        if (this.size == 0){
+            this.addFirst(x);
+        } else {
+            this.sentinel.prev.next = new Node<>(x, this.sentinel, this.sentinel.prev);
+            this.sentinel.prev = this.sentinel.prev.next;
+            this.size++;
+        }
     }
 
     @Override
     public List<T> toList() {
-        return null;
+
+        if (this.size == 0){
+            return null;
+        }
+
+        List<T> returnList = new ArrayList<>();
+
+        Node ptr = this.sentinel;
+
+        for (int i = 0; i < this.size; i++){
+            returnList.add((T) ptr.next.data);
+            ptr = ptr.next;
+        }
+
+        return returnList;
     }
 
     @Override
