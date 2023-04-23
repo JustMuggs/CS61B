@@ -2,26 +2,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LinkedListDeque<T> implements Deque<T> {
-    public static void main(String[] args) {
-        Deque<Integer> lld = new LinkedListDeque<>();
-    }
+    public static void main(String[] args) {}
 
-    private Node sentinel;
+    private final Node<T> sentinel;
     private int size;
 
     public LinkedListDeque() {
-        this.sentinel = new Node<>(42, null, null);
+        this.sentinel = new Node<>(null, null, null);
         this.sentinel.next = this.sentinel;
         this.sentinel.prev = this.sentinel;
         this.size = 0;
     }
 
-    private class Node<T> {
+    private static class Node<T> {
         public T data;
         public Node<T> next;
         public Node<T> prev;
 
-        public Node(T data, Node next, Node prev){
+        public Node(T data, Node<T> next, Node<T> prev){
             this.data = data;
             this.next = next;
             this.prev = prev;
@@ -34,15 +32,14 @@ public class LinkedListDeque<T> implements Deque<T> {
 
             this.sentinel.next = new Node<>(x, this.sentinel, this.sentinel);
             this.sentinel.prev = this.sentinel.next;
-            this.size++;
 
         } else {
 
             this.sentinel.next = new Node<>(x, this.sentinel.next, this.sentinel);
             this.sentinel.next.next.prev = this.sentinel.next;
-            this.size++;
 
         }
+        this.size++;
     }
 
     @Override
@@ -69,10 +66,10 @@ public class LinkedListDeque<T> implements Deque<T> {
 
         List<T> returnList = new ArrayList<>();
 
-        Node ptr = this.sentinel;
+        Node<T> ptr = this.sentinel;
 
         for (int i = 0; i < this.size; i++){
-            returnList.add((T) ptr.next.data);
+            returnList.add(ptr.next.data);
             ptr = ptr.next;
         }
 
@@ -95,8 +92,8 @@ public class LinkedListDeque<T> implements Deque<T> {
             return null;
         }
 
-        Node ptr = this.sentinel.next;
-        T returnValue = (T) ptr.data;
+        Node<T> ptr = this.sentinel.next;
+        T returnValue = ptr.data;
 
         this.sentinel.next = this.sentinel.next.next;
         this.sentinel.next.prev = this.sentinel;
@@ -111,8 +108,8 @@ public class LinkedListDeque<T> implements Deque<T> {
             return null;
         }
 
-        Node ptr = this.sentinel.prev;
-        T returnValue = (T) ptr.data;
+        Node<T> ptr = this.sentinel.prev;
+        T returnValue = ptr.data;
 
 
         this.sentinel.prev = this.sentinel.prev.prev;
@@ -128,13 +125,13 @@ public class LinkedListDeque<T> implements Deque<T> {
             return null;
         }
 
-        Node ptr = this.sentinel;
+        Node<T> ptr = this.sentinel;
 
         for (int i = 0; i <= index; i++){
             ptr = ptr.next;
         }
 
-        return (T) ptr.data;
+        return ptr.data;
     }
 
     @Override
